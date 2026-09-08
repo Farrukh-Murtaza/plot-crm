@@ -1,8 +1,9 @@
+import { LoaderCircle } from "lucide-react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
-    variant?: "primary" | "secondary" | "ghost";
+    variant?: "primary" | "secondary" | "ghost" | "danger";
     loading?: boolean;
 }
 
@@ -16,24 +17,29 @@ export const Button = ({
 }: ButtonProps) => {
     const variants = {
         primary: `
-            bg-brand
-            hover:bg-brand-hover
-            text-white
-            shadow-brand
+            bg-primary
+            hover:bg-primary-hover
+           text-primary-foreground
+         
         `,
 
         secondary: `
-            bg-corporate-surface
-            hover:bg-corporate-hover
+           bg-surface
             border
-            border-corporate-border
-            text-text-primary
+            border-border
+            text-foreground
+            hover:bg-muted
         `,
 
         ghost: `
             bg-transparent
             hover:bg-corporate-hover
             text-text-secondary
+        `,
+        danger: `
+            bg-danger
+            text-white
+            hover:opacity-90
         `,
     };
 
@@ -59,27 +65,10 @@ export const Button = ({
             `}
         >
             {loading && (
-                <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                >
-                    <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                    />
-
-                    <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                </svg>
+                <LoaderCircle
+                    size={18}
+                    className="animate-spin"
+                />
             )}
 
             {children}

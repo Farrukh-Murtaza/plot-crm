@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { TextField } from '../components/ui/TextField';
 import { PasswordField } from '../components/ui/PasswordField';
-import { CircleX } from 'lucide-react';
+import { Building2, Mail } from 'lucide-react';
 import { AuthLayout } from '../components/AuthLayout';
 import { Card } from '../components/ui/Card';
 
@@ -71,6 +71,7 @@ const Login: React.FC = () => {
 
     // Mock login function
     const simulateLogin = (email: string, password: string): Promise<LoginResponse> => {
+        console.log(email, password);
         return new Promise((resolve) => {
             setTimeout(() => {
                 if (email === 'admin@example.com' && password === 'password') {
@@ -96,70 +97,81 @@ const Login: React.FC = () => {
 
 
     return (
-        <AuthLayout >
+        <AuthLayout>
 
             <Card className="p-8">
 
-                {/* Logo & Header */}
-                <div className="text-center mb-8">
-                    <div className="relative inline-block">
+                {/* Header */}
 
-                        <div
-                            className="w-20 h-20 bg-linear-to-br
-                                from-brand to-brand-dark rounded-2xl
-                                flex items-center justify-center mx-auto mb-4shadow-brand"
-                        >
-                            <svg
-                                className="w-10 h-10 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                />
-                            </svg>
-                        </div>
+                <div className="mb-8 text-center">
 
-                        {/* Amber Accent */}
-                        <div
-                            className="absolute -top-1 -right-1 w-4 h-4 bg-brand-light 
-                                rounded-full shadow-lg shadow-brand/30"
-                        />
+                    <div
+                        className="
+                            relative
+                            mx-auto
+                            mb-4
+                            flex
+                            h-20
+                            w-20
+                            items-center
+                            justify-center
+                            rounded-2xl
+                            bg-primary
+                            text-primary-foreground
+                            shadow-lg
+                        "
+                    >
+                        <Building2 size={38} />
                     </div>
 
                     <h1
-                        className="text-3xl font-bold
-                            text-text-primary tracking-tight">
+                        className="
+                            text-3xl
+                            font-bold
+                            tracking-tight
+                            text-foreground
+                        "
+                    >
                         Royal Estates
                     </h1>
 
                     <p
-                        className="text-text-secondary text-sm
-                            mt-1 font-medium tracking-wide">
+                        className="
+                            mt-1
+                            text-sm
+                            font-medium
+                            text-muted-foreground
+                        "
+                    >
                         Property Management System
                     </p>
+
                 </div>
-
-
+                {/* Error */}
                 {error && (
                     <div
-                        className="mb-4 p-3 bg-status-error/10 text-sm flex items-center 
-                            border border-status-error/30 text-red-400 rounded-xl "
                         role="alert"
+                        className="
+                            mb-6
+                            rounded-xl
+                            border
+                            border-danger/30
+                            bg-danger/10
+                            px-4
+                            py-3
+                            text-sm
+                            text-danger
+                        "
                     >
-                        <CircleX className='mr-3' />
-
                         {error}
                     </div>
                 )}
 
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
+                >
 
                     <TextField
                         id="email"
@@ -170,71 +182,94 @@ const Login: React.FC = () => {
                         onChange={handleChange}
                         placeholder="admin@example.com"
                         required
-                        icon={
-                            <svg
-                                className="w-5 h-5 text-text-muted"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                                />
-                            </svg>
-                        }
+                        icon={Mail}
                     />
 
 
                     <PasswordField
-                        id='password'
-                        label='Password'
+                        id="password"
+                        name="password"
+                        label="Password"
+                        value={formData.password}
+                        onChange={handleChange}
                         placeholder="••••••••"
-
+                        required
                     />
 
 
-
-                    {/* Remember Me & Forgot Password */}
-                    <div className="flex items-center justify-between">
-
-                        <label className="flex items-center cursor-pointer group">
+                    <div
+                        className="
+                            flex
+                            items-center
+                            justify-between
+                        "
+                    >
+                        <label
+                            className="
+                                flex
+                                cursor-pointer
+                                items-center
+                                gap-2
+                            "
+                        >
                             <input
                                 type="checkbox"
                                 name="rememberMe"
-                                checked={formData.rememberMe}
+                                checked={
+                                    formData.rememberMe
+                                }
                                 onChange={handleChange}
-                                className="w-4 h-4 rounded bg-corporate-dark border-corporate-border
-                                    text-brand focus:ring-brand/30 cursor-pointer"/>
+                                className="
+                                    h-4
+                                    w-4
+                                    rounded
+                                    border-border
+                                    accent-(--primary)
+                                "
+                            />
 
-                            <span className="ml-2 text-sm text-text-secondary group-hover:text-text-primary transition">
+                            <span
+                                className="
+                                    text-sm
+                                    text-muted-foreground
+                                "
+                            >
                                 Remember me
                             </span>
                         </label>
 
-                        <a
-                            href="#"
-                            className="text-sm text-brand-light hover:text-brand-hover font-medium 
-                                    transition">
-                            Forgot password?
-                        </a>
 
+                        <button
+                            type="button"
+                            className="
+                                text-sm
+                                font-medium
+                                text-primary
+                                hover:text-primary-hover
+                            "
+                        >
+                            Forgot password?
+                        </button>
                     </div>
 
 
-                    {/* Submit Button */}
-                    <Button disabled={loading} className={'w-full'}>Sign In</Button>
+                    <Button
+                        type="submit"
+                        loading={loading}
+                        className="w-full py-3.5"
+                    >
+                        {loading
+                            ? "Signing in..."
+                            : "Sign In"}
+                    </Button>
+
                 </form>
 
-            </Card >
 
-            <p className="mt-6 text-center text-xs text-text-muted">
-                © {new Date().getFullYear()} Royal Estates. All rights reserved.
-            </p>
 
-        </AuthLayout >
+            </Card>
+
+        </AuthLayout>
     );
 };
 

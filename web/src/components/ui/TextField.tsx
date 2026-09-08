@@ -1,16 +1,23 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+import type {
+    InputHTMLAttributes,
+} from "react";
+
+import type {
+    LucideIcon,
+} from "lucide-react";
 
 interface TextFieldProps
     extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
-    icon?: ReactNode;
+
+    icon?: LucideIcon;
 }
 
 export const TextField = ({
     label,
-    icon,
-    className = "",
+    icon: Icon,
     id,
+    className = "",
     ...props
 }: TextFieldProps) => {
     return (
@@ -18,31 +25,31 @@ export const TextField = ({
             <label
                 htmlFor={id}
                 className="
+                    mb-1.5
                     block
                     text-sm
                     font-semibold
-                    text-text-primary
-                    mb-1.5
+                    text-foreground
                 "
             >
                 {label}
             </label>
 
             <div className="relative">
-                {icon && (
+                {Icon && (
                     <div
                         className="
+                            pointer-events-none
                             absolute
                             inset-y-0
                             left-0
-                            pl-3
                             flex
                             items-center
-                            pointer-events-none
-                            text-text-muted
+                            pl-3
+                            text-muted-foreground
                         "
                     >
-                        {icon}
+                        <Icon size={18} />
                     </div>
                 )}
 
@@ -51,20 +58,20 @@ export const TextField = ({
                     {...props}
                     className={`
                         w-full
-                        ${icon ? "pl-10" : "pl-4"}
-                        pr-4
-                        py-3
-                        bg-corporate-dark
-                        border
-                        border-corporate-border
                         rounded-xl
-                        text-text-primary
-                        placeholder:text-text-muted
+                        border
+                        border-border
+                        bg-input
+                        py-3
+                        text-foreground
                         outline-none
                         transition
-                        focus:border-brand
+                        placeholder:text-muted-foreground
+                        focus:border-primary
                         focus:ring-2
-                        focus:ring-brand/20
+                        focus:ring-ring
+                        ${Icon ? "pl-10" : "pl-4"}
+                        pr-4
                         ${className}
                     `}
                 />

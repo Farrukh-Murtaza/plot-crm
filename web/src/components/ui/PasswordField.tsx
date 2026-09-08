@@ -1,7 +1,13 @@
-import { Eye, EyeOff, LockKeyhole } from "lucide-react";
-import { useState } from "react";
-import type { InputHTMLAttributes } from "react";
+import {
+    Eye,
+    EyeOff,
+    Lock,
+} from "lucide-react";
 
+import {
+    useState,
+    type InputHTMLAttributes,
+} from "react";
 
 interface PasswordFieldProps
     extends InputHTMLAttributes<HTMLInputElement> {
@@ -14,59 +20,65 @@ export const PasswordField = ({
     className = "",
     ...props
 }: PasswordFieldProps) => {
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] =
+        useState(false);
 
     return (
         <div>
             <label
                 htmlFor={id}
                 className="
+                    mb-1.5
                     block
                     text-sm
                     font-semibold
-                    text-text-primary
-                    mb-1.5
+                    text-foreground
                 "
             >
                 {label}
             </label>
 
             <div className="relative">
+
                 <div
                     className="
-                            absolute
-                            inset-y-0
-                            left-0
-                            pl-3
-                            flex
-                            items-center
-                            pointer-events-none
-                            text-text-muted
-                        "
+                        pointer-events-none
+                        absolute
+                        inset-y-0
+                        left-0
+                        flex
+                        items-center
+                        pl-3
+                        text-muted-foreground
+                    "
                 >
-                    <LockKeyhole className="w-5 h-5 text-text-muted" />
+                    <Lock size={18} />
                 </div>
 
                 <input
                     id={id}
-                    type={showPassword ? "text" : "password"}
+                    type={
+                        showPassword
+                            ? "text"
+                            : "password"
+                    }
                     {...props}
                     className={`
                         w-full
+                        rounded-xl
+                        border
+                        border-border
+                        bg-input
+                        py-3
                         pl-10
                         pr-12
-                        py-3
-                        bg-corporate-dark
-                        border
-                        border-corporate-border
-                        rounded-xl
-                        text-text-primary
-                        placeholder:text-text-muted
+                        text-foreground
                         outline-none
                         transition
-                        focus:border-brand
+                        placeholder:text-muted-foreground
+                        focus:border-primary
                         focus:ring-2
-                        focus:ring-brand/20
+                        focus:ring-ring
                         ${className}
                     `}
                 />
@@ -74,16 +86,20 @@ export const PasswordField = ({
                 <button
                     type="button"
                     onClick={() =>
-                        setShowPassword((previous) => !previous)
+                        setShowPassword(
+                            (current) => !current
+                        )
                     }
                     className="
                         absolute
                         inset-y-0
                         right-0
+                        flex
+                        items-center
                         px-4
-                        text-text-muted
-                        hover:text-brand-light
+                        text-muted-foreground
                         transition
+                        hover:text-primary
                     "
                     aria-label={
                         showPassword
@@ -92,9 +108,9 @@ export const PasswordField = ({
                     }
                 >
                     {showPassword ? (
-                        <EyeOff className="h-5 w-5" aria-hidden="true" />
+                        <EyeOff size={18} />
                     ) : (
-                        <Eye className="h-5 w-5" aria-hidden="true" />
+                        <Eye size={18} />
                     )}
                 </button>
 
