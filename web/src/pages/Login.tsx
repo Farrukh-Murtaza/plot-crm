@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/Button';
 
 // Types
 interface LoginFormData {
@@ -98,32 +99,26 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-corporate-black via-corporate-dark to-corporate-surface p-4">
+        <div
+            className="min-h-screen flex items-center 
+            justify-center bg-linear-to-br from-corporate-black
+            via-corporate-dark to-corporate-surface p-4">
+
             <div className="w-full max-w-md">
                 {/* Main Card */}
                 <div
-                    className="w-full bg-corporate-card rounded-dashboard shadow-modal p-8 border
-    border-corporate-border backdrop-blur-sm">
-                    {/* Logo & Header */}
+                    className="w-full bg-corporate-card
+                    rounded-dashboard shadow-modal p-8 
+                    borderborder-corporate-border backdrop-blur-sm">
+
                     {/* Logo & Header */}
                     <div className="text-center mb-8">
                         <div className="relative inline-block">
 
                             <div
-                                className="
-        w-20
-        h-20
-        bg-linear-to-br
-        from-brand
-        to-brand-dark
-        rounded-2xl
-        flex
-        items-center
-        justify-center
-        mx-auto
-        mb-4
-        shadow-brand
-      "
+                                className="w-20 h-20 bg-linear-to-br
+                                from-brand to-brand-dark rounded-2xl
+                                flex items-center justify-center mx-auto mb-4shadow-brand"
                             >
                                 <svg
                                     className="w-10 h-10 text-white"
@@ -143,25 +138,20 @@ const Login: React.FC = () => {
 
                             {/* Amber Accent */}
                             <div
-                                className="
-        absolute
-        -top-1
-        -right-1
-        w-4
-        h-4
-        bg-brand-light
-        rounded-full
-        shadow-lg
-        shadow-brand/30
-      "
+                                className="absolute -top-1 -right-1 w-4 h-4 bg-brand-light 
+                                rounded-full shadow-lg shadow-brand/30"
                             />
                         </div>
 
-                        <h1 className="text-3xl font-bold text-text-primary tracking-tight">
+                        <h1
+                            className="text-3xl font-bold
+                            text-text-primary tracking-tight">
                             Royal Estates
                         </h1>
 
-                        <p className="text-text-secondary text-sm mt-1 font-medium tracking-wide">
+                        <p
+                            className="text-text-secondary text-sm
+                            mt-1 font-medium tracking-wide">
                             Property Management System
                         </p>
                     </div>
@@ -169,18 +159,8 @@ const Login: React.FC = () => {
                     {/* Error Message */}
                     {error && (
                         <div
-                            className="
-      mb-4
-      p-3
-      bg-status-error/10
-      border
-      border-status-error/30
-      text-red-400
-      rounded-xl
-      text-sm
-      flex
-      items-start
-    "
+                            className="mb-4 p-3 bg-status-error/10 text-sm flex items-start 
+                            border border-status-error/30 text-red-400 rounded-xl "
                             role="alert"
                         >
                             <svg
@@ -236,23 +216,10 @@ const Login: React.FC = () => {
                                     required
                                     placeholder="admin@example.com"
                                     aria-label="Email address"
-                                    className="
-        w-full
-        pl-10
-        pr-4
-        py-3
-        bg-corporate-dark
-        border
-        border-corporate-border
-        rounded-xl
-        text-text-primary
-        placeholder:text-text-muted
-        outline-none
-        transition
-        focus:border-brand
-        focus:ring-2
-        focus:ring-brand/20
-      "
+                                    className=" w-full pl-10 pr-4 py-3 bg-corporate-dark 
+                                    border border-corporate-border rounded-xl text-text-primary 
+                                    placeholder:text-text-muted outline-none transition focus:border-brand 
+                                    focus:ring-2 focus:ring-brand/20"
                                 />
                             </div>
                         </div>
@@ -292,41 +259,19 @@ const Login: React.FC = () => {
                                     required
                                     placeholder="••••••••"
                                     aria-label="Password"
-                                    className="
-        w-full
-        pl-10
-        pr-12
-        py-3
-        bg-corporate-dark
-        border
-        border-corporate-border
-        rounded-xl
-        text-text-primary
-        placeholder:text-text-muted
-        outline-none
-        transition
-        focus:border-brand
-        focus:ring-2
-        focus:ring-brand/20
-      "
-                                />
+                                    className=" w-full pl-10 pr-4 py-3 bg-corporate-dark 
+                                    border border-corporate-border rounded-xl text-text-primary 
+                                    placeholder:text-text-muted outline-none transition focus:border-brand 
+                                    focus:ring-2 focus:ring-brand/20" />
 
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="
-        absolute
-        inset-y-0
-        right-0
-        pr-3
-        flex
-        items-center
-        text-text-muted
-        hover:text-brand-light
-        transition
-      "
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
-                                >
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center
+                                    text-text-muted hover:text-brand-light transition"
+                                    aria-label={
+                                        showPassword ? "Hide password" : "Show password"
+                                    } >
                                     {/* Your existing eye SVG */}
                                 </button>
                             </div>
@@ -341,17 +286,8 @@ const Login: React.FC = () => {
                                     name="rememberMe"
                                     checked={formData.rememberMe}
                                     onChange={handleChange}
-                                    className="
-        w-4
-        h-4
-        rounded
-        bg-corporate-dark
-        border-corporate-border
-        text-brand
-        focus:ring-brand/30
-        cursor-pointer
-      "
-                                />
+                                    className="w-4 h-4 rounded bg-corporate-dark border-corporate-border
+                                    text-brand focus:ring-brand/30 cursor-pointer"/>
 
                                 <span className="ml-2 text-sm text-text-secondary group-hover:text-text-primary transition">
                                     Remember me
@@ -360,70 +296,25 @@ const Login: React.FC = () => {
 
                             <a
                                 href="#"
-                                className="
-      text-sm
-      text-brand-light
-      hover:text-brand-hover
-      font-medium
-      transition
-    "
-                            >
+                                className="text-sm text-brand-light hover:text-brand-hover font-medium 
+                                    transition">
                                 Forgot password?
                             </a>
 
                         </div>
 
+
                         {/* Submit Button */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="
-    w-full
-    py-3.5
-    bg-brand
-    hover:bg-brand-hover
-    text-white
-    font-semibold
-    rounded-xl
-    transition
-    duration-200
-    shadow-brand
-    hover:-translate-y-0.5
-    disabled:opacity-50
-    disabled:cursor-not-allowed
-    disabled:hover:translate-y-0
-    flex
-    items-center
-    justify-center
-  "
-                        >
-                            {loading ? (
-                                <>
-                                    {/* Existing Spinner */}
-                                    Signing in...
-                                </>
-                            ) : (
-                                "Sign In"
-                            )}
-                        </button>
+                        <Button disabled={loading} className={'w-full'}>Sign In</Button>
                     </form>
 
                     {/* Decorative Divider */}
                     <div className="mt-8 pt-6 border-t border-corporate-border relative">
 
                         <span
-                            className="
-      absolute
-      -top-3
-      left-1/2
-      -translate-x-1/2
-      bg-corporate-card
-      px-4
-      text-brand-light
-      text-xs
-      font-bold
-      tracking-wider
-    "
+                            className="absolute -top-3 left-1/2 -translate-x-1/2
+                                 bg-corporate-card px-4 text-brand-light 
+                                 text-xs font-bold tracking-wider"
                         >
                             PREMIUM
                         </span>
@@ -438,59 +329,22 @@ const Login: React.FC = () => {
                         </p>
 
                         <div className="mt-3 grid grid-cols-2 gap-3">
-
-                            <button
-                                type="button"
-                                onClick={() => fillDemoCredentials("admin")}
-                                className="
-        px-3
-        py-3
-        bg-corporate-dark
-        hover:bg-corporate-hover
-        border
-        border-corporate-border
-        hover:border-brand/50
-        rounded-xl
-        text-xs
-        text-text-primary
-        font-medium
-        transition
-        text-center
-      "
-                            >
+                            <Button className={'flex-col'} onClick={() => fillDemoCredentials("admin")} variant='secondary'>
                                 <span className="block mb-1">👑 Admin</span>
 
                                 <span className="text-[10px] text-text-muted">
                                     admin@example.com
                                 </span>
-                            </button>
+                            </Button>
 
 
-                            <button
-                                type="button"
-                                onClick={() => fillDemoCredentials("customer")}
-                                className="
-        px-3
-        py-3
-        bg-corporate-dark
-        hover:bg-corporate-hover
-        border
-        border-corporate-border
-        hover:border-brand/50
-        rounded-xl
-        text-xs
-        text-text-primary
-        font-medium
-        transition
-        text-center
-      "
-                            >
+                            <Button className={'flex-col'} onClick={() => fillDemoCredentials("customer")} variant='secondary'>
                                 <span className="block mb-1">🏠 Customer</span>
 
                                 <span className="text-[10px] text-text-muted">
                                     user@example.com
                                 </span>
-                            </button>
+                            </Button>
 
                         </div>
 
@@ -509,8 +363,8 @@ const Login: React.FC = () => {
                 <p className="mt-6 text-center text-xs text-text-muted">
                     © {new Date().getFullYear()} Royal Estates. All rights reserved.
                 </p>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
