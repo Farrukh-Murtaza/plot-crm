@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { TextField } from '../components/ui/TextField';
 import { PasswordField } from '../components/ui/PasswordField';
@@ -239,17 +239,13 @@ const Login: React.FC = () => {
                         </label>
 
 
-                        <button
-                            type="button"
-                            className="
-                                text-sm
-                                font-medium
-                                text-primary
-                                hover:text-primary-hover
-                            "
+                        <Link
+                            to="/forgot-password"
+                            className=" text-sm font-medium text-primary
+                             transition-colors hover:text-primary-hover"
                         >
                             Forgot password?
-                        </button>
+                        </Link>
                     </div>
 
 
