@@ -4,6 +4,8 @@ import { Dashboard } from './pages/dashboard/Dashboard';
 import { NotFound } from './pages/NotFound404';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { VerifyOTP } from './pages/VerifyOTP';
+import PropertiesMap from './pages/properties/PropertiesMap';
+import PropertiesDetail from './pages/properties/PropertiesDetail';
 
 
 interface PrivateRouteProps {
@@ -41,6 +43,28 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/plot-map"
+          element={
+            <PrivateRoute>
+              <PropertiesMap />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/plot-detail/:id?"
+          element={
+            <PrivateRoute>
+              <PropertiesDetail />
+            </PrivateRoute>
+          }
+        />
+
+
+
+
 
 
 

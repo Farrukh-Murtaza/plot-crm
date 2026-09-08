@@ -8,7 +8,6 @@ import {
     Settings,
     Users,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
 import { SidebarNavItem } from "./SidebarNavItem";
 
 interface SidebarProps {
@@ -31,7 +30,7 @@ const navigation: NavItem[] = [
     {
         label: "Properties",
         icon: Building2,
-        href: "/properties",
+        href: "/plot-map",
     },
     {
         label: "Customers",

@@ -30,7 +30,7 @@ export const AuthLayout = ({
                 <ThemeToggle />
             </div>
 
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-md bg-background">
                 {children}
             </div>
         </div>
