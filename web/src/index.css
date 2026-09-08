@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+
+@theme {
+  /* Semantic Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-surface: var(--surface);
+
+  --color-border: var(--border);
+
+  --color-input: var(--input);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Corporate Amber */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-ring: var(--ring);
+
+  /* Status Colors */
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  /* Custom Radius */
+  --radius-dashboard: 14px;
+}
+
 @theme {
   /* Corporate Colors */
   --color-corporate-black: #050505;
