@@ -8,61 +8,59 @@ import type {
 
 interface TextFieldProps
     extends InputHTMLAttributes<HTMLInputElement> {
-    label: string;
-
+    label?: string;
     icon?: LucideIcon;
+    error?: string;
+    helperText?: string;
+    required?: boolean;
 }
 
 export const TextField = ({
     label,
     icon: Icon,
     id,
+    error,
+    helperText,
+    required = false,
     className = "",
     ...props
 }: TextFieldProps) => {
-    return (
-        <div>
-            <label
-                htmlFor={id}
-                className="
-                    mb-1.5
-                    block
-                    text-sm
-                    font-semibold
-                    text-foreground
-                "
-            >
-                {label}
-            </label>
+    const inputId = id || props.name || 'text-field';
+    const displayError = error;
 
+    return (
+        <div className="space-y-1.5">
+            {/* Label */}
+            {label && (
+                <label
+                    htmlFor={inputId}
+                    className="block text-sm font-medium text-foreground mb-1"
+                >
+                    {label}
+                    {required && <span className="text-danger ml-1">*</span>}
+                </label>
+            )}
+
+            {/* Input Wrapper */}
             <div className="relative">
+                {/* Icon */}
                 {Icon && (
-                    <div
-                        className="
-                            pointer-events-none
-                            absolute
-                            inset-y-0
-                            left-0
-                            flex
-                            items-center
-                            pl-3
-                            text-muted-foreground
-                        "
-                    >
-                        <Icon size={18} />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ">
+                        <Icon size={18} className="text-muted-foreground" />
                     </div>
                 )}
 
+                {/* Input */}
                 <input
-                    id={id}
+                    id={inputId}
                     {...props}
                     className={`
                         w-full
                         rounded-xl
-                        border
-                        border-border
+                        border-2
+                        ${displayError ? 'border-danger' : 'border-border'}
                         bg-input
-                        py-3
+                        py-2
                         text-foreground
                         outline-none
                         transition
@@ -70,12 +68,32 @@ export const TextField = ({
                         focus:border-primary
                         focus:ring-2
                         focus:ring-ring
-                        ${Icon ? "pl-10" : "pl-4"}
-                        pr-4
+                        disabled:opacity-50
+                        disabled:cursor-not-allowed
+                        ${Icon ? "pl-10" : "px-3"}
                         ${className}
                     `}
+                    aria-invalid={!!displayError}
+                    aria-describedby={displayError ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
+                    required={required}
                 />
             </div>
+
+            {/* Error Message */}
+            {displayError && (
+                <p id={`${inputId}-error`} className="text-sm text-danger">
+                    {displayError}
+                </p>
+            )}
+
+            {/* Helper Text */}
+            {helperText && !displayError && (
+                <p id={`${inputId}-helper`} className="text-sm text-muted-foreground">
+                    {helperText}
+                </p>
+            )}
         </div>
     );
 };
+
+TextField.displayName = 'TextField';

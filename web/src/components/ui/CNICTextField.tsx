@@ -105,7 +105,7 @@ export const CNICTextField = forwardRef<HTMLInputElement, CNICTextFieldProps>(({
             {label && (
                 <label
                     htmlFor={inputId}
-                    className="block text-sm font-semibold text-foreground dark:text-neutral-300"
+                    className="block text-sm font-medium text-foreground mb-1"
                 >
                     {label}
                 </label>
@@ -125,8 +125,8 @@ export const CNICTextField = forwardRef<HTMLInputElement, CNICTextFieldProps>(({
                     placeholder={placeholder}
                     className={`
                         w-full 
-                        ${Icon ? 'pl-10' : 'px-4'} 
-                        pr-16 py-3 
+                        ${Icon ? 'pl-10' : 'px-3'} 
+                        pr-16 py-2 
                         bg-surface dark:bg-surface-elevated
                         border-2 
                         ${error || validationError ? 'border-danger dark:border-danger' : 'border-border dark:border-border'}
@@ -134,7 +134,6 @@ export const CNICTextField = forwardRef<HTMLInputElement, CNICTextFieldProps>(({
                         focus:ring-2 focus:ring-primary/50 focus:border-primary 
                         outline-none transition
                         placeholder:text-muted-foreground dark:placeholder:text-neutral-500
-                        text-foreground dark:text-white
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${className}
                     `}

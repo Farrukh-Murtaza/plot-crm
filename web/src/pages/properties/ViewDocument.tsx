@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Download, Eye, File, ExternalLink, FileImage, FileText, FileArchive } from 'lucide-react';
-import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
 
 interface Document {
     name: string;
@@ -74,7 +74,7 @@ export const ViewDocumentModal: React.FC<ViewDocumentModalProps> = ({
                         {getFileIcon(document.name)}
                     </div>
 
-                    <h2 className="text-xl font-bold text-foreground dark:text-white mb-2">
+                    <h2 className="text-xl font-bold text-foreground  mb-2">
                         {document.name}
                     </h2>
 

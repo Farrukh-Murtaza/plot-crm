@@ -113,7 +113,7 @@ const OTPInput = ({
                     className={`
                         w-12 h-14 text-center text-xl font-bold rounded-xl border-2
                         bg-surface dark:bg-surface-elevated
-                        text-foreground dark:text-white
+                        text-foreground 
                         transition-all duration-200
                         focus:outline-none focus:ring-2 focus:ring-primary/50
                         disabled:opacity-50 disabled:cursor-not-allowed
@@ -272,13 +272,13 @@ export const VerifyOTP = () => {
                                 <Shield size={30} strokeWidth={1.8} />
                             </div>
 
-                            <h1 className="text-2xl font-bold text-foreground dark:text-white">
+                            <h1 className="text-2xl font-bold text-foreground ">
                                 Verify OTP
                             </h1>
 
                             <p className="mt-2 text-sm leading-6 text-muted-foreground dark:text-neutral-400">
                                 Enter the 6-digit code sent to your{" "}
-                                <span className="font-medium text-foreground dark:text-white">
+                                <span className="font-medium text-foreground ">
                                     {getMethodLabel()}
                                 </span>
                             </p>
@@ -411,7 +411,7 @@ export const VerifyOTP = () => {
                             <CheckCircle2 size={34} strokeWidth={1.8} />
                         </div>
 
-                        <h1 className="text-2xl font-bold text-foreground dark:text-white">
+                        <h1 className="text-2xl font-bold text-foreground ">
                             OTP Verified! 🎉
                         </h1>
 

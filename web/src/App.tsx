@@ -45,7 +45,7 @@ function App() {
         />
 
         <Route
-          path="/plot-map"
+          path="/properties"
           element={
             <PrivateRoute>
               <PropertiesMap />
@@ -54,7 +54,7 @@ function App() {
         />
 
         <Route
-          path="/plot-detail/:id?"
+          path="/properties/:id?"
           element={
             <PrivateRoute>
               <PropertiesDetail />

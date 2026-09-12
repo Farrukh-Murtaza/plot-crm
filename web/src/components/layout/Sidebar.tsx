@@ -30,7 +30,7 @@ const navigation: NavItem[] = [
     {
         label: "Properties",
         icon: Building2,
-        href: "/plot-map",
+        href: "/properties",
     },
     {
         label: "Customers",

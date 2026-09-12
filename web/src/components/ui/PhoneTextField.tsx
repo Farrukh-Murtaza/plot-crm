@@ -124,7 +124,7 @@ export const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(
             {label && (
                 <label
                     htmlFor={inputId}
-                    className="block text-sm font-semibold text-foreground dark:text-neutral-300"
+                    className="block text-sm font-medium text-foreground mb-1"
                 >
                     {label}
                 </label>
@@ -145,7 +145,7 @@ export const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(
                     className={`
                         w-full 
                         ${Icon ? 'pl-10' : 'px-4'} 
-                        pr-16 py-3 
+                        pr-16 py-2 
                         bg-surface dark:bg-surface-elevated
                         border-2 
                         ${error || validationError ? 'border-danger dark:border-danger' : 'border-border dark:border-border'}
@@ -153,7 +153,7 @@ export const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(
                         focus:ring-2 focus:ring-primary/50 focus:border-primary 
                         outline-none transition
                         placeholder:text-muted-foreground dark:placeholder:text-neutral-500
-                        text-foreground dark:text-white
+                        text-foreground 
                         disabled:opacity-50 disabled:cursor-not-allowed
                         ${className}
                     `}
@@ -178,7 +178,7 @@ export const PhoneTextField = forwardRef<HTMLInputElement, PhoneTextFieldProps>(
                 </p>
             )}
             <p className="text-xs text-muted-foreground dark:text-neutral-500">
-                Format: xxxx-xxxxxxx or +92 3XX-XXXXXXX
+                Format: xxxx-xxxxxxx
             </p>
         </div>
     );
