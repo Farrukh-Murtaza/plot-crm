@@ -12,7 +12,7 @@ export interface AddPaymentFormData {
     amount: number;
     type: PaymentType;
     method: PaymentMethod;
-    notes: string;
+    notes?: string;
 }
 
 
@@ -148,7 +148,7 @@ export interface PropertyData {
         length: number;
     };
 
-    owner: OwnerDetail;
+    owner?: OwnerDetail;
     payments: Payment[];
 
     bookingDate: string;

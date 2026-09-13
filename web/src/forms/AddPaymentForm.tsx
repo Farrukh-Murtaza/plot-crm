@@ -52,7 +52,7 @@ export const AddPaymentForm: React.FC<AddPaymentFormProps> = ({
         }
 
         setError(null);
-        onSave({ ...formData, description: formData.description.trim(), notes: formData.notes.trim() });
+        onSave({ ...formData, description: formData.description.trim(), notes: formData.notes?.trim() });
     };
 
 

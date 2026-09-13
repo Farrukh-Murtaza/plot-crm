@@ -1,4 +1,4 @@
-import type { Property, PropertyData } from "../types";
+import type { OwnerDetail, PropertyData } from "../types";
 
 // Mock Data
 export const mockPlotDetail: PropertyData = {
@@ -197,170 +197,189 @@ export const mockPlotDetail: PropertyData = {
 };
 
 
-// Mock data
-export const mockProperties: Property[] = [
-    {
-        id: '1',
-        number: '1',
-        size: '10',
-        block: 'A',
-        street: '1',
-        status: 'available',
-        price: 2500000,
-    },
-    {
-        id: '2',
-        number: '2',
-        size: '10',
-        block: 'A',
-        street: '1',
-        status: 'sold',
-        price: 2800000,
-        owner: {
-            name: 'Mr. Ahmad Khan',
-            phone: '+92 300 1234567',
-            email: 'ahmad@example.com'
+const TITLE_PREFIXES = ['Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.', 'Prof.'];
+
+/** Splits a "Mr. Ahmad Khan"-style string into { title, name }. */
+const splitTitle = (raw: string): { title: OwnerDetail['title']; name: string } => {
+    const prefix = TITLE_PREFIXES.find((t) => raw.startsWith(t + ' '));
+    return prefix
+        ? { title: prefix as OwnerDetail['title'], name: raw.slice(prefix.length + 1) }
+        : { title: 'Mr.', name: raw };
+};
+
+/** Builds a full OwnerDetail from the minimal info the old mock data had. Fills the rest with placeholders. */
+const makeOwner = (rawName: string, phone: string, email: string): OwnerDetail => {
+    const { title, name } = splitTitle(rawName);
+    return {
+        title,
+        name,
+        relation: 'S/O',
+        relationName: '', // not available in old mock data
+        cnic: '',          // not available in old mock data
+        phone,
+        whatsapp: phone,   // assumed same as phone for mock purposes
+        email,
+        occupation: 'Business Owner', // placeholder — not available in old mock data
+        address: '',
+        nominee: null,
+    };
+};
+
+const addMonthsISO = (iso: string, months: number): string => {
+    const d = new Date(iso);
+    d.setMonth(d.getMonth() + months);
+    return d.toISOString().slice(0, 10);
+};
+
+interface BookedInput {
+    id: string;
+    number: string;
+    size: number;
+    block: string;
+    street: string;
+    status: PropertyData['status'];
+    price: number;
+    ownerName: string;
+    phone: string;
+    email: string;
+    bookingDate: string;
+    totalPaid: number;
+    pendingAmount: number;
+}
+
+/** Builds a booked/reserved/pending property, synthesizing a 3-year monthly installment plan
+ *  from totalPaid/pendingAmount since the old mock data didn't track individual installments. */
+const makeBookedProperty = (input: BookedInput): PropertyData => {
+    const planYears = 3;
+    const totalInstallments = planYears * 12;
+    const installmentAmount = Math.round(input.price / totalInstallments);
+    const paidInstallments = Math.min(
+        Math.round(input.totalPaid / installmentAmount),
+        totalInstallments
+    );
+    const pendingInstallments = totalInstallments - paidInstallments;
+    const isFullyPaid = pendingInstallments <= 0;
+
+    return {
+        id: input.id,
+        number: input.number,
+        size: input.size,
+        block: input.block,
+        street: input.street,
+        status: input.status,
+        price: input.price,
+        ratePerMarla: Math.round(input.price / input.size),
+        totalAmount: input.price,
+        isParkFace: false,
+        parkFaceCharges: 0,
+        isCorner: false,
+        cornerCharges: 0,
+        dimensions: { width: 0, length: 0 }, // not available in old mock data
+        owner: makeOwner(input.ownerName, input.phone, input.email),
+        payments: [], // individual payment history not available in old mock data
+        bookingDate: input.bookingDate,
+        totalPaid: input.totalPaid,
+        pendingAmount: input.pendingAmount,
+        downPayment: 0,
+        installmentFrequency: 'monthly',
+        planYears,
+        planStartDate: input.bookingDate,
+        installmentPlan: {
+            totalInstallments,
+            paidInstallments,
+            pendingInstallments,
+            installmentAmount,
+            nextDueDate: isFullyPaid ? undefined : addMonthsISO(input.bookingDate, paidInstallments + 1),
+            nextDueAmount: isFullyPaid ? undefined : installmentAmount,
         },
-        bookingDate: '2024-01-15',
-        totalPaid: 2800000,
-        pendingAmount: 0
+        documents: [],
+        notes: [],
+    };
+};
+
+/** Builds an available (unbooked) property — no owner, no payments, no plan yet. */
+const makeAvailableProperty = (input: {
+    id: string;
+    number: string;
+    size: number;
+    block: string;
+    street: string;
+    price: number;
+}): PropertyData => ({
+    id: input.id,
+    number: input.number,
+    size: input.size,
+    block: input.block,
+    street: input.street,
+    status: 'available',
+    price: input.price,
+    ratePerMarla: Math.round(input.price / input.size),
+    totalAmount: input.price,
+    isParkFace: false,
+    parkFaceCharges: 0,
+    isCorner: false,
+    cornerCharges: 0,
+    dimensions: { width: 0, length: 0 },
+    owner: undefined,
+    payments: [],
+    bookingDate: '',
+    totalPaid: 0,
+    pendingAmount: input.price,
+    downPayment: 0,
+    installmentFrequency: 'monthly',
+    planYears: 0,
+    planStartDate: '',
+    installmentPlan: {
+        totalInstallments: 0,
+        paidInstallments: 0,
+        pendingInstallments: 0,
+        installmentAmount: 0,
     },
-    {
-        id: '3',
-        number: '3',
-        size: '12',
-        block: 'A',
-        street: '1',
-        status: 'reserved',
-        price: 3200000,
-        owner: {
-            name: 'Ms. Fatima Ali',
-            phone: '+92 321 7654321',
-            email: 'fatima@example.com'
-        },
-        bookingDate: '2024-02-10',
-        totalPaid: 1500000,
-        pendingAmount: 1700000
-    },
-    {
-        id: '4',
-        number: '4',
-        size: '10',
-        block: 'A',
-        street: '1',
-        status: 'pending',
-        price: 2600000,
-        owner: {
-            name: 'Mr. Usman Shah',
-            phone: '+92 333 9876543',
-            email: 'usman@example.com'
-        },
-        bookingDate: '2024-03-05',
-        totalPaid: 500000,
-        pendingAmount: 2100000
-    },
-    {
-        id: '5',
-        number: '5',
-        size: '8',
-        block: 'A',
-        street: '2',
-        status: 'available',
-        price: 1800000,
-    },
-    {
-        id: '6',
-        number: '6',
-        size: '10',
-        block: 'A',
-        street: '2',
-        status: 'sold',
-        price: 2200000,
-        owner: {
-            name: 'Mr. Imran Ali',
-            phone: '+92 345 5556666',
-            email: 'imran@example.com'
-        },
-        bookingDate: '2024-01-20',
-        totalPaid: 2200000,
-        pendingAmount: 0
-    },
-    {
-        id: '7',
-        number: '7',
-        size: '10',
-        block: 'A',
-        street: '2',
-        status: 'available',
-        price: 2300000,
-    },
-    {
-        id: '8',
-        number: '8',
-        size: '12',
-        block: 'A',
-        street: '2',
-        status: 'reserved',
-        price: 3000000,
-        owner: {
-            name: 'Dr. Sana Khan',
-            phone: '+92 312 3334444',
-            email: 'sana@example.com'
-        },
-        bookingDate: '2024-02-25',
-        totalPaid: 1000000,
-        pendingAmount: 2000000
-    },
-    {
-        id: '9',
-        number: '9',
-        size: '10',
-        block: 'B',
-        street: '1',
-        status: 'available',
-        price: 2400000,
-    },
-    {
-        id: '10',
-        number: '10',
-        size: '10',
-        block: 'B',
-        street: '1',
-        status: 'sold',
-        price: 2700000,
-        owner: {
-            name: 'Mr. Ali Raza',
-            phone: '+92 312 7778888',
-            email: 'ali@example.com'
-        },
-        bookingDate: '2024-03-10',
-        totalPaid: 2700000,
-        pendingAmount: 0
-    },
-    {
-        id: '11',
-        number: '11',
-        size: '12',
-        block: 'B',
-        street: '2',
-        status: 'available',
-        price: 3100000,
-    },
-    {
-        id: '12',
-        number: '12',
-        size: '8',
-        block: 'B',
-        street: '2',
-        status: 'pending',
-        price: 1900000,
-        owner: {
-            name: 'Ms. Ayesha Malik',
-            phone: '+92 333 9990000',
-            email: 'ayesha@example.com'
-        },
-        bookingDate: '2024-03-20',
-        totalPaid: 300000,
-        pendingAmount: 1600000
-    },
+    documents: [],
+    notes: [],
+});
+
+// ---------- Mock data ----------
+
+export const mockProperties: PropertyData[] = [
+    makeAvailableProperty({ id: '1', number: '1', size: 10, block: 'A', street: '1', price: 2500000 }),
+    makeBookedProperty({
+        id: '2', number: '2', size: 10, block: 'A', street: '1', status: 'sold', price: 2800000,
+        ownerName: 'Mr. Ahmad Khan', phone: '+92 300 1234567', email: 'ahmad@example.com',
+        bookingDate: '2024-01-15', totalPaid: 2800000, pendingAmount: 0,
+    }),
+    makeBookedProperty({
+        id: '3', number: '3', size: 12, block: 'A', street: '1', status: 'reserved', price: 3200000,
+        ownerName: 'Ms. Fatima Ali', phone: '+92 321 7654321', email: 'fatima@example.com',
+        bookingDate: '2024-02-10', totalPaid: 1500000, pendingAmount: 1700000,
+    }),
+    makeBookedProperty({
+        id: '4', number: '4', size: 10, block: 'A', street: '1', status: 'pending', price: 2600000,
+        ownerName: 'Mr. Usman Shah', phone: '+92 333 9876543', email: 'usman@example.com',
+        bookingDate: '2024-03-05', totalPaid: 500000, pendingAmount: 2100000,
+    }),
+    makeAvailableProperty({ id: '5', number: '5', size: 8, block: 'A', street: '2', price: 1800000 }),
+    makeBookedProperty({
+        id: '6', number: '6', size: 10, block: 'A', street: '2', status: 'sold', price: 2200000,
+        ownerName: 'Mr. Imran Ali', phone: '+92 345 5556666', email: 'imran@example.com',
+        bookingDate: '2024-01-20', totalPaid: 2200000, pendingAmount: 0,
+    }),
+    makeAvailableProperty({ id: '7', number: '7', size: 10, block: 'A', street: '2', price: 2300000 }),
+    makeBookedProperty({
+        id: '8', number: '8', size: 12, block: 'A', street: '2', status: 'reserved', price: 3000000,
+        ownerName: 'Dr. Sana Khan', phone: '+92 312 3334444', email: 'sana@example.com',
+        bookingDate: '2024-02-25', totalPaid: 1000000, pendingAmount: 2000000,
+    }),
+    makeAvailableProperty({ id: '9', number: '9', size: 10, block: 'B', street: '1', price: 2400000 }),
+    makeBookedProperty({
+        id: '10', number: '10', size: 10, block: 'B', street: '1', status: 'sold', price: 2700000,
+        ownerName: 'Mr. Ali Raza', phone: '+92 312 7778888', email: 'ali@example.com',
+        bookingDate: '2024-03-10', totalPaid: 2700000, pendingAmount: 0,
+    }),
+    makeAvailableProperty({ id: '11', number: '11', size: 12, block: 'B', street: '2', price: 3100000 }),
+    makeBookedProperty({
+        id: '12', number: '12', size: 8, block: 'B', street: '2', status: 'pending', price: 1900000,
+        ownerName: 'Ms. Ayesha Malik', phone: '+92 333 9990000', email: 'ayesha@example.com',
+        bookingDate: '2024-03-20', totalPaid: 300000, pendingAmount: 1600000,
+    }),
 ];

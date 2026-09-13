@@ -20,7 +20,8 @@ import { Modal } from '../../components/ui/Modal';
 import { TextField } from '../../components/ui/TextField';
 import { Select } from '../../components/ui/Select';
 import { mockProperties } from '../../data';
-import type { Property } from '../../types';
+import type { PropertyData } from '../../types';
+import { EditPropertyForm } from '../../forms';
 
 // ---------- Status filter options ----------
 const STATUS_OPTIONS = [
@@ -35,10 +36,15 @@ const PropertiesMap: React.FC = () => {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
 
-    const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+    // Lifted into state so booking actually persists in this session,
+    // instead of reading a static import that never changes.
+    const [properties, setProperties] = useState<PropertyData[]>(mockProperties);
+
+    const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterBlock, setFilterBlock] = useState<string>('all');
+    const [bookingProperty, setBookingProperty] = useState<PropertyData | null>(null);
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -49,7 +55,7 @@ const PropertiesMap: React.FC = () => {
 
     // ---------- Unique blocks for filter ----------
     const blockOptions = useMemo(() => {
-        const uniqueBlocks = new Set(mockProperties.map((p) => p.block));
+        const uniqueBlocks = new Set(properties.map((p) => p.block));
         return [
             { value: 'all', label: 'All Blocks' },
             ...Array.from(uniqueBlocks).map((b) => ({
@@ -57,11 +63,11 @@ const PropertiesMap: React.FC = () => {
                 label: `Block ${b}`,
             })),
         ];
-    }, []);
+    }, [properties]);
 
     // ---------- Filter & search ----------
     const filteredProperties = useMemo(() => {
-        return mockProperties.filter((property) => {
+        return properties.filter((property) => {
             const searchMatch =
                 property.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 property.block.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -76,19 +82,19 @@ const PropertiesMap: React.FC = () => {
 
             return searchMatch && statusMatch && blockMatch;
         });
-    }, [searchTerm, filterStatus, filterBlock]);
+    }, [properties, searchTerm, filterStatus, filterBlock]);
 
     // ---------- Status counts ----------
     const statusCounts = useMemo(() => {
-        const counts: Record<string, number> = { all: mockProperties.length };
-        mockProperties.forEach((property) => {
+        const counts: Record<string, number> = { all: properties.length };
+        properties.forEach((property) => {
             counts[property.status] = (counts[property.status] || 0) + 1;
         });
         return counts;
-    }, []);
+    }, [properties]);
 
     // ---------- Status helpers ----------
-    const getStatusConfig = (status: Property['status']) => {
+    const getStatusConfig = (status: PropertyData['status']) => {
         const configs = {
             available: {
                 label: 'Available',
@@ -119,7 +125,7 @@ const PropertiesMap: React.FC = () => {
         return configs[status];
     };
 
-    const getStatusBorderColor = (status: Property['status']) => {
+    const getStatusBorderColor = (status: PropertyData['status']) => {
         switch (status) {
             case 'available':
                 return 'border-success/50 hover:border-success';
@@ -141,6 +147,13 @@ const PropertiesMap: React.FC = () => {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(amount);
+
+    // Called by EditPropertyForm (mode="book") on submit — replaces the old dead handleBook.
+    const handleBookingSave = (updated: PropertyData) => {
+        setProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        setBookingProperty(null);
+        setSelectedProperty(null);
+    };
 
     return (
         <div className="min-h-screen bg-background">
@@ -211,7 +224,6 @@ const PropertiesMap: React.FC = () => {
 
                 {/* Search & Filters */}
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
-                    {/* Search */}
                     <div className="flex-1">
                         <TextField
                             icon={Search}
@@ -222,9 +234,7 @@ const PropertiesMap: React.FC = () => {
                         />
                     </div>
 
-                    {/* Filters */}
                     <div className="flex flex-wrap gap-3">
-                        {/* Status Filter Buttons */}
                         <div className="flex gap-2 flex-wrap">
                             {STATUS_OPTIONS.map((option) => (
                                 <button
@@ -246,7 +256,6 @@ const PropertiesMap: React.FC = () => {
                             ))}
                         </div>
 
-                        {/* Block Filter */}
                         <div className="min-w-35">
                             <Select
                                 name="blockFilter"
@@ -262,16 +271,9 @@ const PropertiesMap: React.FC = () => {
                 {/* Property Cards Grid */}
                 {filteredProperties.length === 0 ? (
                     <div className="text-center py-12">
-                        <Home
-                            size={48}
-                            className="mx-auto text-muted-foreground mb-4"
-                        />
-                        <h3 className="text-lg font-medium text-foreground">
-                            No properties found
-                        </h3>
-                        <p className="text-muted-foreground">
-                            Try adjusting your search or filters
-                        </p>
+                        <Home size={48} className="mx-auto text-muted-foreground mb-4" />
+                        <h3 className="text-lg font-medium text-foreground">No properties found</h3>
+                        <p className="text-muted-foreground">Try adjusting your search or filters</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -291,15 +293,13 @@ const PropertiesMap: React.FC = () => {
                                         p-4
                                     `}
                                 >
-                                    {/* Header */}
                                     <div className="flex items-start justify-between mb-3">
                                         <div>
                                             <h3 className="text-xl font-bold text-foreground">
                                                 Property #{property.number}
                                             </h3>
                                             <p className="text-sm text-muted-foreground">
-                                                Block {property.block} • Street{' '}
-                                                {property.street}
+                                                Block {property.block} • Street {property.street}
                                             </p>
                                         </div>
                                         <div
@@ -313,25 +313,18 @@ const PropertiesMap: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    {/* Details */}
                                     <div className="space-y-2">
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground">Size</span>
-                                            <span className="font-medium text-foreground">
-                                                {property.size} Marla
-                                            </span>
+                                            <span className="font-medium text-foreground">{property.size} Marla</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground">Price</span>
-                                            <span className="font-semibold text-primary">
-                                                {formatCurrency(property.price)}
-                                            </span>
+                                            <span className="font-semibold text-primary">{formatCurrency(property.price)}</span>
                                         </div>
                                         {property.owner && (
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-muted-foreground">
-                                                    Owner
-                                                </span>
+                                                <span className="text-muted-foreground">Owner</span>
                                                 <span className="font-medium text-foreground truncate max-w-30">
                                                     {property.owner.name}
                                                 </span>
@@ -339,14 +332,9 @@ const PropertiesMap: React.FC = () => {
                                         )}
                                     </div>
 
-                                    {/* Footer */}
                                     <div className="mt-3 flex items-center gap-2">
-                                        <div
-                                            className={`w-2 h-2 rounded-full ${statusConfig.dotColor} animate-pulse`}
-                                        />
-                                        <span className="text-xs text-muted-foreground">
-                                            Click for details
-                                        </span>
+                                        <div className={`w-2 h-2 rounded-full ${statusConfig.dotColor} animate-pulse`} />
+                                        <span className="text-xs text-muted-foreground">Click for details</span>
                                     </div>
                                 </div>
                             );
@@ -364,12 +352,10 @@ const PropertiesMap: React.FC = () => {
             >
                 {selectedProperty && (
                     <>
-                        {/* Header */}
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-sm text-muted-foreground">
-                                    Block {selectedProperty.block} • Street{' '}
-                                    {selectedProperty.street}
+                                    Block {selectedProperty.block} • Street {selectedProperty.street}
                                 </p>
                                 <span
                                     className={`
@@ -377,34 +363,24 @@ const PropertiesMap: React.FC = () => {
                                         ${getStatusConfig(selectedProperty.status).className}
                                     `}
                                 >
-                                    {React.createElement(
-                                        getStatusConfig(selectedProperty.status).icon,
-                                        { size: 14 }
-                                    )}
+                                    {React.createElement(getStatusConfig(selectedProperty.status).icon, { size: 14 })}
                                     {getStatusConfig(selectedProperty.status).label}
                                 </span>
                             </div>
-
                         </div>
 
-                        {/* Details Grid */}
                         <div className="grid grid-cols-2 gap-4 mb-6">
                             <div className="p-3 bg-muted rounded-lg">
                                 <p className="text-xs text-muted-foreground">Size</p>
-                                <p className="font-semibold text-foreground">
-                                    {selectedProperty.size} Marla
-                                </p>
+                                <p className="font-semibold text-foreground">{selectedProperty.size} Marla</p>
                             </div>
                             <div className="p-3 bg-muted rounded-lg">
                                 <p className="text-xs text-muted-foreground">Price</p>
-                                <p className="font-semibold text-foreground">
-                                    {formatCurrency(selectedProperty.price)}
-                                </p>
+                                <p className="font-semibold text-foreground">{formatCurrency(selectedProperty.price)}</p>
                             </div>
                         </div>
 
-                        {/* Owner Info */}
-                        {selectedProperty.owner ? (
+                        {selectedProperty.owner?.name ? (
                             <div className="mb-6 p-4 bg-primary/5 rounded-lg border border-primary/10">
                                 <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                                     <User size={16} />
@@ -413,70 +389,46 @@ const PropertiesMap: React.FC = () => {
                                 <div className="space-y-2">
                                     <p className="text-sm">
                                         <span className="text-muted-foreground">Name:</span>{' '}
-                                        <span className="font-medium">
-                                            {selectedProperty.owner.name}
-                                        </span>
+                                        <span className="font-medium">{selectedProperty.owner.name}</span>
                                     </p>
                                     <p className="text-sm">
                                         <span className="text-muted-foreground">Phone:</span>{' '}
-                                        <span className="font-medium">
-                                            {selectedProperty.owner.phone}
-                                        </span>
+                                        <span className="font-medium">{selectedProperty.owner.phone}</span>
                                     </p>
                                     <p className="text-sm">
                                         <span className="text-muted-foreground">Email:</span>{' '}
-                                        <span className="font-medium">
-                                            {selectedProperty.owner.email}
-                                        </span>
+                                        <span className="font-medium">{selectedProperty.owner.email}</span>
                                     </p>
                                 </div>
                             </div>
                         ) : (
                             <div className="mb-6 p-4 bg-success/5 rounded-lg border border-success/10 text-center">
-                                <CheckCircle
-                                    size={24}
-                                    className="mx-auto text-success mb-2"
-                                />
-                                <p className="text-sm text-muted-foreground">
-                                    This property is available for sale
-                                </p>
+                                <CheckCircle size={24} className="mx-auto text-success mb-2" />
+                                <p className="text-sm text-muted-foreground">This property is available for sale</p>
                             </div>
                         )}
 
-                        {/* Payment Info */}
-                        {selectedProperty.owner && (
+                        {selectedProperty.owner?.name && (
                             <div className="mb-6">
-                                <h3 className="text-sm font-semibold text-foreground mb-3">
-                                    Payment Details
-                                </h3>
+                                <h3 className="text-sm font-semibold text-foreground mb-3">Payment Details</h3>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="p-3 bg-success/5 rounded-lg border border-success/10">
-                                        <p className="text-xs text-muted-foreground">
-                                            Total Paid
-                                        </p>
+                                        <p className="text-xs text-muted-foreground">Total Paid</p>
                                         <p className="font-semibold text-success">
-                                            {formatCurrency(
-                                                selectedProperty.totalPaid || 0
-                                            )}
+                                            {formatCurrency(selectedProperty.totalPaid || 0)}
                                         </p>
                                     </div>
                                     <div className="p-3 bg-danger/5 rounded-lg border border-danger/10">
-                                        <p className="text-xs text-muted-foreground">
-                                            Pending
-                                        </p>
+                                        <p className="text-xs text-muted-foreground">Pending</p>
                                         <p className="font-semibold text-danger">
-                                            {formatCurrency(
-                                                selectedProperty.pendingAmount || 0
-                                            )}
+                                            {formatCurrency(selectedProperty.pendingAmount || 0)}
                                         </p>
                                     </div>
                                 </div>
                                 {selectedProperty.bookingDate && (
                                     <p className="mt-2 text-xs text-muted-foreground">
                                         Booked on:{' '}
-                                        {new Date(
-                                            selectedProperty.bookingDate
-                                        ).toLocaleDateString('en-PK', {
+                                        {new Date(selectedProperty.bookingDate).toLocaleDateString('en-PK', {
                                             day: '2-digit',
                                             month: 'long',
                                             year: 'numeric',
@@ -486,14 +438,11 @@ const PropertiesMap: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Actions */}
-                        <div className="flex gap-3 ">
+                        <div className="flex gap-3">
                             <Button
                                 className="flex-1"
                                 onClick={() => {
-                                    navigate(
-                                        `/properties/${selectedProperty.id}`
-                                    );
+                                    navigate(`/properties/${selectedProperty.id}`);
                                     setSelectedProperty(null);
                                 }}
                             >
@@ -504,10 +453,7 @@ const PropertiesMap: React.FC = () => {
                                     variant="secondary"
                                     className="flex-1"
                                     onClick={() => {
-                                        console.log(
-                                            'Book property',
-                                            selectedProperty.id
-                                        );
+                                        setBookingProperty(selectedProperty);
                                         setSelectedProperty(null);
                                     }}
                                 >
@@ -516,6 +462,23 @@ const PropertiesMap: React.FC = () => {
                             )}
                         </div>
                     </>
+                )}
+            </Modal>
+
+            {/* Booking Modal */}
+            <Modal
+                title={`Book Property #${bookingProperty?.number}`}
+                isOpen={!!bookingProperty}
+                onClose={() => setBookingProperty(null)}
+                maxWidth="3xl"
+            >
+                {bookingProperty && (
+                    <EditPropertyForm
+                        mode="book"
+                        initialData={bookingProperty}
+                        onSave={handleBookingSave}
+                        onCancel={() => setBookingProperty(null)}
+                    />
                 )}
             </Modal>
         </div>
